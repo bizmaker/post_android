@@ -20,16 +20,36 @@
 			//theme: themeObj,
 				
             oncomplete: function(data) {
+		    var fullAddr = data.address; // 최종 주소 변수
+			var extraAddr = ''; // 조합형 주소 변수
+			if(data.addressType === 'R'){
+			  if(data.bname !== ''){
+			    extraAddr += data.bname;
+			  }
+			  if(data.buildingName !== ''){
+			    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+			  }
+			  fullAddr += (extraAddr !== '' ? ' '+ extraAddr +'' : '');
+			}
+			var fullRoadAddr = data.roadAddress; // 도로명 주소 변수
+			var buildingName = data.buildingName; // 도로명 조합형 주소 변수
+			var extraRoadAddr = '';
+
+			if(buildingName != ''){
+			  extraRoadAddr = ' '+buildingName;
+			}
+
+			if(fullRoadAddr !== ''){
+			  fullRoadAddr += extraRoadAddr;
+			}
+
+			var postData = {
+			    postcode : data.postcode,
+			    zonecode : data.zonecode,
+			    addr : fullRoadAddr
+			};
 				
-                if(data.userSelectedType=="R"){
-					 // userSelectedType : 검색 결과에서 사용자가 선택한 주소의 타입
-					// return type : R - roadAddress, J : jibunAddress
-					// TestApp 은 안드로이드에서 등록한 이름
-					window.ChsnsPost.setAddress(data.zonecode, data.roadAddress, data.buildingName);
-				}
-				else{
-					window.ChsnsPost.setAddress(data.zonecode, data.jibunAddress, data.buildingName);
-				}  
+              window.Android.setAddress(postData);
 
 
             },
