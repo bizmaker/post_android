@@ -1,63 +1,53 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 </head>
 <body>
 <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
 <script>
+var element_wrap = document.getElementById('wrap');
 
-	 var element_wrap = document.getElementById('wrap');
+daum.postcode.load(function(){
+new daum.Postcode({
+oncomplete: function(data) {
+	var fullAddr = data.address; // 최종 주소 변수
+	var extraAddr = ''; // 조합형 주소 변수
+	if(data.addressType === 'R'){
+	if(data.bname !== ''){
+		extraAddr += data.bname;
+	}
+	if(data.buildingName !== ''){
+		extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+	}
+		fullAddr += (extraAddr !== '' ? ' '+ extraAddr +'' : '');
+	}
+	var fullRoadAddr = data.roadAddress; // 도로명 주소 변수
+	var buildingName = data.buildingName; // 도로명 조합형 주소 변수
+	var extraRoadAddr = '';
 
-	 daum.postcode.load(function(){
-        new daum.Postcode({
-			//theme: themeObj,
-				
-            oncomplete: function(data) {
-				
-              var fullAddr = data.address; // 최종 주소 변수
-        var extraAddr = ''; // 조합형 주소 변수
-        if(data.addressType === 'R'){
-          if(data.bname !== ''){
-            extraAddr += data.bname;
-          }
-          if(data.buildingName !== ''){
-            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-          }
-          fullAddr += (extraAddr !== '' ? ' '+ extraAddr +'' : '');
-        }
-        var fullRoadAddr = data.roadAddress; // 도로명 주소 변수
-        var buildingName = data.buildingName; // 도로명 조합형 주소 변수
-        var extraRoadAddr = '';
-        
-        if(buildingName != ''){
-          extraRoadAddr = ' '+buildingName;
-        }
-        
-        if(fullRoadAddr !== ''){
-          fullRoadAddr += extraRoadAddr;
-        }
-        
-        var postData = {
-            postcode : data.postcode,
-            zonecode : data.zonecode,
-            addr : fullRoadAddr
-        };
-        
-        
-        window.Android.processDATA(postData);
-        
+	if(buildingName != ''){
+		extraRoadAddr = ' '+buildingName;
+	}
 
+	if(fullRoadAddr !== ''){
+		fullRoadAddr += extraRoadAddr;
+	}
 
-            },
-		onresize : function(size) {
-			element_wrap.style.height = size.height+'px';
-		},
-		width : '100%',
-		height : '100%'
-        }).embed(element_wrap);
-		 element_wrap.style.display = 'block';
-    });
+	var postData = {
+		postcode : data.postcode,
+		zonecode : data.zonecode,
+		addr : fullRoadAddr
+	};
+	window.Android.processDATA(postData);
+},
+onresize : function(size) {
+element_wrap.style.height = size.height+'px';
+},
+width : '100%',
+height : '100%'
+}).embed(element_wrap);
+element_wrap.style.display = 'block';
+});
 </script>
-	</body>
+</body>
 </html>
